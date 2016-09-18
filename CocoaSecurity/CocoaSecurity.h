@@ -28,6 +28,20 @@
 
 #pragma mark - CocoaSecurity
 @interface CocoaSecurity : NSObject
+
+#pragma mark - DES Encrypt
++ (CocoaSecurityResult *)desEncrypt:(NSString *)data key:(NSString *)key;
++ (CocoaSecurityResult *)desEncrypt:(NSString *)data hexKey:(NSString *)key hexIv:(NSString *)iv;
++ (CocoaSecurityResult *)desEncrypt:(NSString *)data key:(NSData *)key iv:(NSData *)iv;
++ (CocoaSecurityResult *)desEncryptWithData:(NSData *)data key:(NSData *)key iv:(NSData *)iv;
+#pragma mark DES Decrypt
++ (CocoaSecurityResult *)desDecryptWithBase64:(NSString *)data key:(NSString *)key;
++ (CocoaSecurityResult *)desDecryptWithBase64:(NSString *)data hexKey:(NSString *)key hexIv:(NSString *)iv;
++ (CocoaSecurityResult *)desDecryptWithBase64:(NSString *)data key:(NSData *)key iv:(NSData *)iv;
++ (CocoaSecurityResult *)desDecryptWithData:(NSData *)data key:(NSData *)key iv:(NSData *)iv;
+
+
+
 #pragma mark - AES Encrypt
 + (CocoaSecurityResult *)aesEncrypt:(NSString *)data key:(NSString *)key;
 + (CocoaSecurityResult *)aesEncrypt:(NSString *)data hexKey:(NSString *)key hexIv:(NSString *)iv;
