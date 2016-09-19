@@ -23,7 +23,7 @@
     NSData *aesKey = [sha.data subdataWithRange:NSMakeRange(0, 32)];
     NSData *aesIv = [sha.data subdataWithRange:NSMakeRange(32, 16)];
     
-    return [self aesEncrypt:data key:aesKey iv:aesIv];
+    return [self desEncrypt:data key:aesKey iv:aesIv];
 }
 
 #pragma mark DES Encrypt 128, 192, 256
@@ -33,28 +33,23 @@
     NSData *aesKey = [decoder hex:key];
     NSData *aesIv = [decoder hex:iv];
     
-    return [self aesEncrypt:data key:aesKey iv:aesIv];
+    return [self desEncrypt:data key:aesKey iv:aesIv];
 }
 + (CocoaSecurityResult *)desEncrypt:(NSString *)data key:(NSData *)key iv:(NSData *)iv
 {
-    return [self aesEncryptWithData:[data dataUsingEncoding:NSUTF8StringEncoding] key:key iv:iv];
+    return [self desEncryptWithData:[data dataUsingEncoding:NSUTF8StringEncoding] key:key iv:iv];
 }
 + (CocoaSecurityResult *)desEncryptWithData:(NSData *)data key:(NSData *)key iv:(NSData *)iv
 {
     // check length of key and iv
-    if ([iv length] != 16) {
+    if ([iv length] != 8) {
         @throw [NSException exceptionWithName:@"Cocoa Security"
-                                       reason:@"Length of iv is wrong. Length of iv should be 16(128bits)"
-                                     userInfo:nil];
-    }
-    if ([key length] != 16 && [key length] != 24 && [key length] != 32 ) {
-        @throw [NSException exceptionWithName:@"Cocoa Security"
-                                       reason:@"Length of key is wrong. Length of iv should be 16, 24 or 32(128, 192 or 256bits)"
+                                       reason:@"Length of iv is wrong. Length of iv should be 8(128bits)"
                                      userInfo:nil];
     }
     
     // setup output buffer
-    size_t bufferSize = [data length] + kCCBlockSizeAES128;
+    size_t bufferSize = [data length] + kCCBlockSizeDES;
     void *buffer = malloc(bufferSize);
     
     // do encrypt
@@ -92,7 +87,7 @@
     NSData *aesKey = [sha.data subdataWithRange:NSMakeRange(0, 32)];
     NSData *aesIv = [sha.data subdataWithRange:NSMakeRange(32, 16)];
     
-    return [self aesDecryptWithBase64:data key:aesKey iv:aesIv];
+    return [self desDecryptWithBase64:data key:aesKey iv:aesIv];
 }
 #pragma mark DES Decrypt 128, 192, 256
 + (CocoaSecurityResult *)desDecryptWithBase64:(NSString *)data hexKey:(NSString *)key hexIv:(NSString *)iv
@@ -101,29 +96,25 @@
     NSData *aesKey = [decoder hex:key];
     NSData *aesIv = [decoder hex:iv];
     
-    return [self aesDecryptWithBase64:data key:aesKey iv:aesIv];
+    return [self desDecryptWithBase64:data key:aesKey iv:aesIv];
 }
 + (CocoaSecurityResult *)desDecryptWithBase64:(NSString *)data key:(NSData *)key iv:(NSData *)iv
 {
     CocoaSecurityDecoder *decoder = [CocoaSecurityDecoder new];
-    return [self aesDecryptWithData:[decoder base64:data] key:key iv:iv];
+    return [self desDecryptWithData:[decoder base64:data] key:key iv:iv];
 }
 + (CocoaSecurityResult *)desDecryptWithData:(NSData *)data key:(NSData *)key iv:(NSData *)iv
 {
     // check length of key and iv
-    if ([iv length] != 16) {
+    if ([iv length] != 8) {
         @throw [NSException exceptionWithName:@"Cocoa Security"
                                        reason:@"Length of iv is wrong. Length of iv should be 16(128bits)"
                                      userInfo:nil];
     }
-    if ([key length] != 16 && [key length] != 24 && [key length] != 32 ) {
-        @throw [NSException exceptionWithName:@"Cocoa Security"
-                                       reason:@"Length of key is wrong. Length of iv should be 16, 24 or 32(128, 192 or 256bits)"
-                                     userInfo:nil];
-    }
+
     
     // setup output buffer
-    size_t bufferSize = [data length] + kCCBlockSizeAES128;
+    size_t bufferSize = [data length] + kCCBlockSizeDES;
     void *buffer = malloc(bufferSize);
     
     // do encrypt
