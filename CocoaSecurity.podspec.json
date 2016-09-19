@@ -20,5 +20,5 @@
     "submodules/Base64/Base64/*.{h,m}"
   ],
   "requires_arc": true
-  "dependency": "Base64nl”
+  "dependency":  "Base64nl"
 }
