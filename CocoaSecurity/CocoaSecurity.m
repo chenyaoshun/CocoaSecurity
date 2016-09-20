@@ -16,17 +16,17 @@
 
 
 #pragma mark - DES Encrypt
-// default AES Encrypt, key -> SHA384(key).sub(0, 32), iv -> SHA384(key).sub(32, 16)
+// default AES Encrypt, key -> key, iv -> {0,1,2,3,4,5,6,7,8}
 + (CocoaSecurityResult *)desEncrypt:(NSString *)data key:(NSString *)key
 {
-    CocoaSecurityResult * sha = [self sha384:key];
-    NSData *aesKey = [sha.data subdataWithRange:NSMakeRange(0, 32)];
-    NSData *aesIv = [sha.data subdataWithRange:NSMakeRange(32, 16)];
+    NSData *desKey = [key dataUsingEncoding:NSUTF8StringEncoding] ;
+    CocoaSecurityDecoder *decoder = [CocoaSecurityDecoder new];
+    NSData *desIv = [decoder hex:@"0102030405060708"];
     
-    return [self desEncrypt:data key:aesKey iv:aesIv];
+    return [self desEncrypt:data key:desKey iv:desIv];
 }
 
-#pragma mark DES Encrypt 128, 192, 256
+#pragma mark DES Encrypt 128
 + (CocoaSecurityResult *)desEncrypt:(NSString *)data hexKey:(NSString *)key hexIv:(NSString *)iv
 {
     CocoaSecurityDecoder *decoder = [CocoaSecurityDecoder new];
@@ -80,16 +80,16 @@
     }
 }
 #pragma mark - DES Decrypt
-// default AES Decrypt, key -> SHA384(key).sub(0, 32), iv -> SHA384(key).sub(32, 16)
+// default AES Decrypt, key -> key, iv -> {0,1,2,3,4,5,6,7,8}
 + (CocoaSecurityResult *)desDecryptWithBase64:(NSString *)data key:(NSString *)key
 {
-    CocoaSecurityResult * sha = [self sha384:key];
-    NSData *aesKey = [sha.data subdataWithRange:NSMakeRange(0, 32)];
-    NSData *aesIv = [sha.data subdataWithRange:NSMakeRange(32, 16)];
+    NSData *desKey = [key dataUsingEncoding:NSUTF8StringEncoding] ;
+    CocoaSecurityDecoder *decoder = [CocoaSecurityDecoder new];
+    NSData *desIv = [decoder hex:@"0102030405060708"];
     
-    return [self desDecryptWithBase64:data key:aesKey iv:aesIv];
+    return [self desDecryptWithBase64:data key:desKey iv:desIv];
 }
-#pragma mark DES Decrypt 128, 192, 256
+#pragma mark DES Decrypt 128
 + (CocoaSecurityResult *)desDecryptWithBase64:(NSString *)data hexKey:(NSString *)key hexIv:(NSString *)iv
 {
     CocoaSecurityDecoder *decoder = [CocoaSecurityDecoder new];
@@ -108,7 +108,7 @@
     // check length of key and iv
     if ([iv length] != 8) {
         @throw [NSException exceptionWithName:@"Cocoa Security"
-                                       reason:@"Length of iv is wrong. Length of iv should be 16(128bits)"
+                                       reason:@"Length of iv is wrong. Length of iv should be 8(128bits)"
                                      userInfo:nil];
     }
 

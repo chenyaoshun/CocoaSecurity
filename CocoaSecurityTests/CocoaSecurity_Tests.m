@@ -30,6 +30,36 @@
     [super tearDown];
 }
 
+- (void)testEncryptDES
+{
+    NSString *expected = @"T6DEkodfsQsbkO/i4iOVsL3gF/EumKqZW5dQPw0Kn/5JTe+xwPkUVuC94a/PaP9i+mM/Ro6UdEsS2PLtcHXHvcIrMs5chOeEeGvpPfnAcSIjoyagv7QyEGfxq+uN5O77iH9YIeKXwh6SApd8Gm+K8ffIwLaDXFqMBtkUideW5viDw9qQkykoRrqFXi32uPso91U5vlDzyI3SdcpbXrhBbC2BNJVchk9o63YSs0kmZjDwmSp8SfIS0IydoV3gzwpCVhqoZfsHSBrGoau6QXIbZ51vlq/D+PzR0B6oLjy5VzoaZBGynHj1GAomZFz6AoQouqcSi9nr1GKvGTWIPio/2ZDNL2+XjWULJdov5jT8lwq8bOQZxkaaJeMO+udHpoxVz0KOW6x8+CU+3rMTWivgStpAT8stY1d/JODLMjnm47JbLawUed1UeI8zJHbSqwtEA8AI/OXkbLoQCL5Fbsp/a9+bvci8DKDJDvuPVg7lM5JJn3UP8M/WoA==";
+
+    
+    CocoaSecurityResult *actual = [CocoaSecurity desEncrypt:@"{\"data\":{\"stepRecord\":[{\"stepCount\":\"0\",\"stepDay\":\"20160918\"}]},\"head\":{\"user_id\":\"1609091040111551\",\"user_password\":\"e10adc3949ba59abbe56e057f20f883e\",\"app_version\":\"1.1\",\"command_id\":\"gatherDayStep\",\"terminal_name\":\"iOS\",\"app_id\":\"corestep\",\"osVersion\":\"1.1.2\",\"request_tick\":\"\",\"osName\":\"iPhone 4S\",\"terminal_id\":\"B9006B19-D822-4A07-94DF-0310C3E8BFA4\",\"resource\":\"app\"}}"
+                                                        key:@"c1r2d3y4"
+                                   ];
+    
+    NSLog(@"%@", actual.utf8String);
+    
+    XCTAssertEqualObjects(expected, actual.base64, @"");
+}
+
+
+
+- (void)testDecryptWithBase64
+{
+    NSString *expected = @"{\"data\":{\"stepRecord\":[{\"stepCount\":\"0\",\"stepDay\":\"20160918\"}]},\"head\":{\"user_id\":\"1609091040111551\",\"user_password\":\"e10adc3949ba59abbe56e057f20f883e\",\"app_version\":\"1.1\",\"command_id\":\"gatherDayStep\",\"terminal_name\":\"iOS\",\"app_id\":\"corestep\",\"osVersion\":\"1.1.2\",\"request_tick\":\"\",\"osName\":\"iPhone 4S\",\"terminal_id\":\"B9006B19-D822-4A07-94DF-0310C3E8BFA4\",\"resource\":\"app\"}}";
+    
+    
+    CocoaSecurityResult *actual = [CocoaSecurity desDecryptWithBase64:@"T6DEkodfsQsbkO/i4iOVsL3gF/EumKqZW5dQPw0Kn/5JTe+xwPkUVuC94a/PaP9i+mM/Ro6UdEsS2PLtcHXHvcIrMs5chOeEeGvpPfnAcSIjoyagv7QyEGfxq+uN5O77iH9YIeKXwh6SApd8Gm+K8ffIwLaDXFqMBtkUideW5viDw9qQkykoRrqFXi32uPso91U5vlDzyI3SdcpbXrhBbC2BNJVchk9o63YSs0kmZjDwmSp8SfIS0IydoV3gzwpCVhqoZfsHSBrGoau6QXIbZ51vlq/D+PzR0B6oLjy5VzoaZBGynHj1GAomZFz6AoQouqcSi9nr1GKvGTWIPio/2ZDNL2+XjWULJdov5jT8lwq8bOQZxkaaJeMO+udHpoxVz0KOW6x8+CU+3rMTWivgStpAT8stY1d/JODLMjnm47JbLawUed1UeI8zJHbSqwtEA8AI/OXkbLoQCL5Fbsp/a9+bvci8DKDJDvuPVg7lM5JJn3UP8M/WoA=="
+                                                        key:@"c1r2d3y4"
+                                   ];
+    
+    NSLog(@"%@", actual.utf8String);
+    
+    XCTAssertEqualObjects(expected, actual.utf8String, @"");
+}
+
 - (void)testEncryptAES128
 {
     NSString *expected = @"zT1PS64MnXIUDCUiy13RRg==";
